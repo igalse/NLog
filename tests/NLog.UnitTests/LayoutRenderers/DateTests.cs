@@ -34,6 +34,7 @@
 using System;
 using System.Xml;
 using System.Reflection;
+using System.Globalization;
 
 using NLog;
 using NLog.Config;
@@ -57,7 +58,7 @@ namespace NLog.UnitTests.LayoutRenderers
             </nlog>");
 
             LogManager.GetLogger("d").Debug("zzz");
-            DateTime dt = DateTime.Parse(GetDebugLastMessage("debug"));
+            DateTime dt = DateTime.Parse(GetDebugLastMessage("debug"), CultureInfo.InvariantCulture);
             DateTime now = DateTime.Now;
 
             Assert.IsTrue(Math.Abs((dt - now).TotalSeconds) < 5);
