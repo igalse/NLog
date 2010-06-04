@@ -40,6 +40,7 @@ namespace NLog.Targets
     using System.Text;
     using NLog.Config;
     using NLog.Layouts;
+    using NLog.Common;
 
     /// <summary>
     /// Writes log message to the specified message queue handled by MSMQ.
@@ -142,17 +143,17 @@ namespace NLog.Targets
 
             string queue = this.Queue.Render(logEvent);
 
-            if (!MessageQueue.Exists(queue))
+
+            if (this.CreateQueueIfNotExists)
             {
-                if (this.CreateQueueIfNotExists)
+                InternalLogger.Trace("Trying to check if target queue: {0} exists", queue);
+                if (!MessageQueue.Exists(queue))
                 {
+                    InternalLogger.Trace("Queue {0} doesn't exist, Trying to create", queue);
                     MessageQueue.Create(queue);
                 }
-                else
-                {
-                    return;
-                }
             }
+
 
             using (MessageQueue mq = new MessageQueue(queue))
             {
